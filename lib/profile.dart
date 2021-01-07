@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:gknow/reposApi.dart';
-
 import 'User.dart';
 import 'myDrawer.dart';
 
@@ -21,11 +19,9 @@ class Repos {
 }
 
 class Profile extends StatefulWidget {
-  // These areas will be fixed after usage of database
-  // Since there is no database, variables set as default
-  static String username = "emrdagkusu";
-  static String avatarUrl =
-      "https://avatars1.githubusercontent.com/u/56932641?v=4";
+  static String username = "";
+  static String usernameID = "";
+  static var isTrue = false;
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -156,7 +152,11 @@ class _ProfileState extends State<Profile> {
                 Expanded(
                   child: FlatButton(
                     onPressed: () {
-                      print(screenSize);
+                      Profile.isTrue = false;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Profile()));
                     },
                     child: Text(
                       'Repositories',
@@ -166,7 +166,13 @@ class _ProfileState extends State<Profile> {
                 ),
                 Expanded(
                   child: FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Profile.isTrue = true;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Profile()));
+                    },
                     child: Text(
                       'Notes',
                       style: TextStyle(color: Colors.white),
@@ -176,23 +182,44 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: reposList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    child: ListTile(
-                        leading: Icon(Icons.message_sharp),
-                        title: Text(reposList[index].name),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: Colors.amber,
-                        )),
-                  );
-                }),
-          ),
+          Profile.isTrue ?  _notesList() : _reposList()
         ],
       ),
+    );
+  }
+
+  Widget _reposList() {
+    return Expanded(
+      child: ListView.builder(
+          itemCount: reposList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              child: ListTile(
+                  leading: Icon(Icons.message_sharp),
+                  title: Text(reposList[index].name),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    color: Colors.amber,
+                  )),
+            );
+          }),
+    );
+  }
+
+  Widget _notesList() {
+    return Column(
+      children: [
+        FlatButton(
+          color: Colors.amberAccent,
+          onPressed: () {
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (context) => BottomNavigation()));
+          },
+          child: Text('Add Note'),
+        ),
+      ],
     );
   }
 

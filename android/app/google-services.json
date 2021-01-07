@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "954944049416",
+    "project_id": "gknow-second",
+    "storage_bucket": "gknow-second.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954944049416:android:e5010d1a1a2b27d8989cbd",
+        "android_client_info": {
+          "package_name": "com.example.gknow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "954944049416-rs6b8oi8b16t7o0n7hhbt824bk664gap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0bHNdZI4qymTx8qGOFbHvHI1Ve6Qk5Sc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "954944049416-rs6b8oi8b16t7o0n7hhbt824bk664gap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

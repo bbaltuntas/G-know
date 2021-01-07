@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:gknow/profile.dart';
 import 'package:gknow/register.dart';
-
+import 'package:gknow/userFirestore.dart';
+import 'package:provider/provider.dart';
+import 'authenticationService.dart';
 import 'bottomNavigation.dart';
-import 'main.dart';
 
 class Login extends StatefulWidget {
+  static String email;
+
   @override
   _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  TextEditingController nameControl = new TextEditingController();
+  TextEditingController emailControl = new TextEditingController();
   TextEditingController passwordControl = new TextEditingController();
-  bool flag = false;
 
   void alert(BuildContext context, String mesaj) {
     var alert = AlertDialog(
@@ -46,19 +49,20 @@ class _LoginState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/github.png',
+              'assets/images/profile.png',
               width: deviceOrientation == Orientation.portrait
                   ? screenSize / 2
                   : 0,
             ),
+            SizedBox(height: screenSize / 30),
             TextField(
-              controller: nameControl,
+              controller: emailControl,
               decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.amberAccent),
                 ),
                 border: OutlineInputBorder(),
-                labelText: 'Name',
+                labelText: 'e-mail',
                 labelStyle: TextStyle(color: Colors.grey),
               ),
             ),
@@ -82,21 +86,15 @@ class _LoginState extends State<Login> {
                 FlatButton(
                   color: Colors.amberAccent,
                   onPressed: () {
-                    if (nameControl.text == 'mobile' &&
-                        passwordControl.text == '123') {
-                      setState(() {
-                        MyApp.isLogin = true;
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BottomNavigation()));
-                        print('True');
-                      });
-                    } else {
-                      setState(() {
-                        print('False');
-                      });
-                    }
+                    context.read<AuthenticationService>().signIn(
+                      email: emailControl.text.trim(),
+                      password: passwordControl.text.trim(),
+                    );
+                    UserFirestore().getUsername(emailControl.text.trim());
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BottomNavigation()));
                   },
                   child: Text('Login'),
                 ),

@@ -32,14 +32,13 @@ class _MyDrawerState extends State<MyDrawer> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                            image: NetworkImage(Profile.avatarUrl)),
-                      ),
+                    width: 130,
+                    height: 130,
+                    child: Image.asset(
+                      'assets/images/profile.png',
+                      width: deviceOrientation == Orientation.portrait
+                          ? screenSize / 2
+                          : 0,
                     ),
                   ),
                   SizedBox(
@@ -47,12 +46,12 @@ class _MyDrawerState extends State<MyDrawer> {
                   ),
                   Text(
                     Profile.username,
-                    style: TextStyle(color: Colors.amberAccent, fontSize: 20),
+                    style: TextStyle(color: Colors.black, fontSize: 30),
                   )
                 ],
               ),
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: Colors.amberAccent,
               ),
             ),
           ),

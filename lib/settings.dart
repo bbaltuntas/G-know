@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:gknow/login.dart';
+import 'package:gknow/profile.dart';
+import 'package:provider/provider.dart';
+import 'authenticationService.dart';
+import 'changeUsername.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -44,14 +49,15 @@ class _SettingsState extends State<Settings> {
           ),
           ListTile(
             title: Text('Sign Out'),
-            subtitle: Text('yourPerfectUsername'),
+            subtitle: Text(Profile.username),
             leading: Icon(
               Icons.subdirectory_arrow_left_sharp,
               color: Colors.black,
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
+              context.read<AuthenticationService>().signOut();
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Login()));
             },
           ),
           ListTile(
@@ -62,18 +68,19 @@ class _SettingsState extends State<Settings> {
               color: Colors.black,
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => ChangeUsername()));
             },
           ),
           ListTile(
-            title: Text('Change G-Know Information'),
-            subtitle: Text('For G-Know account that allows to login'),
+            title: Text('Change G-Know Password'),
+            subtitle: Text('When you click this you will get an reset e-mail'),
             leading: Icon(
               Icons.lock,
               color: Colors.black,
             ),
             onTap: () {
+              context.read<AuthenticationService>().changePassword();
               // Navigator.of(context).push(MaterialPageRoute(
               //     builder: (BuildContext context) => LanguagesScreen()));
             },

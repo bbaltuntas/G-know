@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gknow/login.dart';
+import 'package:gknow/userFirestore.dart';
+import 'package:provider/provider.dart';
+import 'authenticationService.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -8,7 +11,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  TextEditingController nameControl = new TextEditingController();
+  TextEditingController emailControl = new TextEditingController();
   TextEditingController passwordControl = new TextEditingController();
   TextEditingController usernameControl = new TextEditingController();
 
@@ -42,13 +45,13 @@ class _RegisterState extends State<Register> {
                   : 0,
             ),
             TextField(
-              controller: nameControl,
+              controller: emailControl,
               decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.amberAccent),
                 ),
                 border: OutlineInputBorder(),
-                labelText: 'Name',
+                labelText: 'e-mail',
                 labelStyle: TextStyle(color: Colors.grey),
               ),
             ),
@@ -84,7 +87,17 @@ class _RegisterState extends State<Register> {
               children: [
                 FlatButton(
                   color: Colors.amberAccent,
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<AuthenticationService>().signUp(
+                      email: emailControl.text.trim(),
+                      password: passwordControl.text.trim(),
+                    );
+                    UserFirestore().addUsername(emailControl.text.trim(), usernameControl.text.trim());
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Login()));
+                  },
                   child: Text('Register'),
                 ),
                 SizedBox(width: screenSize / 12),
