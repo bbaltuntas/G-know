@@ -15,10 +15,16 @@ class UserFirestore {
         .catchError((error) => print("Failed to add username: $error"));
   }
 
-  Future<void> changeUsername(String newUsername) {
-    return usernames.doc(Profile.usernameID).update({"username": newUsername})
-        .then((value) => print("Username Changed"))
-        .catchError((error) => print("Failed to add user: $error"));
+  Future<void> updateUsername(String usernameID, String newUsername) {
+    return usernames.doc(usernameID).update({"username": newUsername})
+        .then((value) => print("Username Updated"))
+        .catchError((error) => print("Failed to update user: $error"));
+  }
+
+  Future<void> deleteUsername(String usernameID) {
+    return usernames.doc(usernameID).delete()
+        .then((value) => print("Username deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
   }
 
   Future<void> getUsername(String email) {

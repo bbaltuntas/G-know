@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gknow/profile.dart';
-import 'package:gknow/register.dart';
 import 'package:gknow/userFirestore.dart';
 import 'package:provider/provider.dart';
 import 'authenticationService.dart';
-import 'bottomNavigation.dart';
 import 'login.dart';
 
 class ChangeUsername extends StatefulWidget {
@@ -24,7 +22,6 @@ class _ChangeUsernameState extends State<ChangeUsername> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Center(child: Text('Change Username')),
         backgroundColor: Colors.black,
       ),
@@ -52,15 +49,21 @@ class _ChangeUsernameState extends State<ChangeUsername> {
               ),
             ),
             SizedBox(height: screenSize / 40),
-            FlatButton(
-              color: Colors.amberAccent,
-              onPressed: () {
-                UserFirestore().changeUsername(newUsernameControl.text.trim());
-                context.read<AuthenticationService>().signOut();
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => Login()));
-              },
-              child: Text('Change Username'),
+            Container(
+              width: screenSize,
+              height: screenSize/8,
+              child: FlatButton(
+                color: Colors.amberAccent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                onPressed: () async {
+                  UserFirestore().updateUsername(Profile.usernameID, newUsernameControl.text.trim());
+                  context.read<AuthenticationService>().signOut();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => Login()));
+                },
+                child: Text('Change Username'),
+              ),
             ),
           ],
         ),

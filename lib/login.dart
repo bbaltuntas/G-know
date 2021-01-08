@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gknow/profile.dart';
 import 'package:gknow/register.dart';
 import 'package:gknow/userFirestore.dart';
 import 'package:provider/provider.dart';
@@ -79,34 +78,47 @@ class _LoginState extends State<Login> {
                 labelStyle: TextStyle(color: Colors.grey),
               ),
             ),
-            SizedBox(height: screenSize / 40),
+            SizedBox(height: screenSize / 35),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                FlatButton(
-                  color: Colors.amberAccent,
-                  onPressed: () {
-                    context.read<AuthenticationService>().signIn(
-                      email: emailControl.text.trim(),
-                      password: passwordControl.text.trim(),
-                    );
-                    UserFirestore().getUsername(emailControl.text.trim());
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomNavigation()));
-                  },
-                  child: Text('Login'),
+                Container(
+                  width: screenSize/2,
+                  height: screenSize/8,
+                  child: FlatButton(
+                    color: Colors.amberAccent,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    onPressed: () {
+                      context.read<AuthenticationService>().signIn(
+                        email: emailControl.text.trim(),
+                        password: passwordControl.text.trim(),
+                      );
+                      Login.email = emailControl.text.trim();
+                      UserFirestore().getUsername(emailControl.text.trim());
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottomNavigation()));
+                    },
+                      child: Text('Login'),
+                  ),
                 ),
                 SizedBox(width: screenSize / 12),
-                FlatButton(
-                  color: Colors.amberAccent,
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Register()));
-                  },
-                  child: Text('Register'),
-                )
+                Container(
+                  width: screenSize/4,
+                  height: screenSize/8,
+                  child: FlatButton(
+                    color: Colors.black,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Register()));
+                    },
+                    child: Text('Register', style: TextStyle(color: Colors.white),),
+                  ),
+                ),
               ],
             )
           ],

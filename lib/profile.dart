@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:gknow/noteFirestore.dart';
+import 'package:gknow/addNote.dart';
 import 'package:http/http.dart' as http;
 import 'package:gknow/reposApi.dart';
 import 'User.dart';
+import 'login.dart';
 import 'myDrawer.dart';
 
 class Repos {
@@ -40,11 +43,25 @@ class _ProfileState extends State<Profile> {
   }
 
   List<Repos> reposList = List<Repos>();
+  List userNotesList = [];
 
   @override
   void initState() {
     super.initState();
     getReposFromApi();
+    fetchNotesFirestore();
+  }
+
+  fetchNotesFirestore() async {
+    dynamic resultant = await NoteFirestore().getNotes(Login.email);
+
+    if (resultant == null) {
+      print('Unable to retrieve');
+    } else {
+      setState(() {
+        userNotesList = resultant;
+      });
+    }
   }
 
   @override
@@ -59,6 +76,17 @@ class _ProfileState extends State<Profile> {
           title: Center(child: Text(Profile.username)),
           backgroundColor: Colors.black,
         ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddNote("Add Note", "", "", "")));
+        },
+        label: Text('Add'),
+        icon: Icon(Icons.notes),
+        backgroundColor: Colors.black,
+      ),
         body: FutureBuilder(
             future: getUser(),
             builder: (context, snapshot) {
@@ -74,7 +102,8 @@ class _ProfileState extends State<Profile> {
                         valueColor:
                             new AlwaysStoppedAnimation<Color>(Colors.black)));
               }
-            }));
+            }),
+    );
   }
 
   Widget _informationPart(double screenSize, Orientation deviceOrientation,
@@ -182,7 +211,7 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          Profile.isTrue ?  _notesList() : _reposList()
+          Profile.isTrue ?  _notesList(screenSize) : _reposList()
         ],
       ),
     );
@@ -195,7 +224,7 @@ class _ProfileState extends State<Profile> {
           itemBuilder: (BuildContext context, int index) {
             return Card(
               child: ListTile(
-                  leading: Icon(Icons.message_sharp),
+                  leading: Icon(Icons.account_balance_outlined),
                   title: Text(reposList[index].name),
                   trailing: Icon(
                     Icons.arrow_forward_ios_rounded,
@@ -206,20 +235,37 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _notesList() {
-    return Column(
-      children: [
-        FlatButton(
-          color: Colors.amberAccent,
-          onPressed: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //         builder: (context) => BottomNavigation()));
-          },
-          child: Text('Add Note'),
-        ),
-      ],
+  Widget _notesList(double screenSize) {
+    return Expanded(
+            child: ListView.builder(
+                itemCount: userNotesList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Card(
+                    child: ListTile(
+                        leading: Icon(Icons.message_sharp),
+                        title: Text(userNotesList[index]['title']),
+                        subtitle: Text(userNotesList[index]['context']),
+                        trailing: Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          color: Colors.amber,
+                        ),
+                        onLongPress: () {
+                          NoteFirestore().deleteNote(userNotesList[index]['id']);
+                          Profile.isTrue = true;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Profile()));
+                        },
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddNote("Update Note", userNotesList[index]['title'], userNotesList[index]['context'], userNotesList[index]['id'])));
+                        },
+                    ),
+                  );
+            }),
     );
   }
 

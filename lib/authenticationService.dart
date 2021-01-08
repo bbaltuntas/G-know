@@ -12,6 +12,10 @@ class AuthenticationService {
     await _firebaseAuth.signOut();
   }
 
+  Future<void> delete() async {
+    await _firebaseAuth.currentUser.delete();
+  }
+
   Future<String> changePassword() async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: Login.email);

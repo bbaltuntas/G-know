@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gknow/deleteUser.dart';
 import 'package:gknow/login.dart';
 import 'package:gknow/profile.dart';
 import 'package:provider/provider.dart';
@@ -187,8 +188,8 @@ class _SettingsState extends State<Settings> {
               color: Colors.black,
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Deleteuser()));
             },
           ),
           Divider(

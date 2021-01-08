@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="gknow"
+        android:label="G-Know"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity
