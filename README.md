@@ -15,8 +15,8 @@ G-Know is a flutter application devloped via using firebase, firestore and publi
 ![Drawer - Search Profile - Settings](ScreenShots/drawer-searchProfile-settings.png)
 
 ## Information about app:
-**1-** On the login page username: mobile and password: 123.<br>
-**2-** On the Register page you can see the UI but since there is no database, it doesn't work yet.<br>
+**1-** First you should register and then you can login.<br>
+**2-** There is a problem when you change your username. You have login two times to change your username.<br>
 **3-** To see the images you should be connected to the Internet because we used networkImage widget. 
    (And you should wait a bit for loading of networkImages.)<br>
 **4-** To see the example of how other user's profile will look like, on the search history part of search page
