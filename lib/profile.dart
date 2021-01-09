@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gknow/noteFirestore.dart';
 import 'package:gknow/addNote.dart';
 import 'package:http/http.dart' as http;
@@ -91,6 +92,9 @@ class _ProfileState extends State<Profile> {
         body: FutureBuilder(
             future: getUser(),
             builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return _nullUserPart(screenSize);
+              }
               if (snapshot.hasData) {
                 return (deviceOrientation == Orientation.portrait
                     ? _buildVerticalLayout(
@@ -104,6 +108,70 @@ class _ProfileState extends State<Profile> {
                             new AlwaysStoppedAnimation<Color>(Colors.black)));
               }
             }),
+    );
+  }
+
+  Widget _nullUserPart(double screenSize) {
+    return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              child: Icon(
+                Icons.error,
+                size: 75,
+              ),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Center(
+                    child: Text(
+                      "Something went wrong!",
+                      style: TextStyle(
+                          color: Colors.amberAccent,
+                          fontSize: 23,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Center(
+                    child: Text(
+                      "These things could be happened: ",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                ),
+                _errorList("The given username does not exist on github"),
+                _errorList("Entered wrong password or/and username"),
+                _errorList("GitHub REST API limit is exceeded"),
+                SizedBox(height: screenSize / 10),
+                _errorList("Please be sure your username and password is correct and re-login. "
+                    "If this problem still continue wait 1 hour for reset of GitHub REST API limit and then re-login."),
+              ],
+            ),
+          ],
+        ));
+  }
+
+  Widget _errorList(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+              fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 
