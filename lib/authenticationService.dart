@@ -19,7 +19,7 @@ class AuthenticationService {
   Future<String> changePassword() async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: Login.email);
-      return "Signed in";
+      return "Password Changed";
     } on FirebaseAuthException catch (e) {
       return e.message;
     }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gknow/bottomNavigation.dart';
 import 'package:gknow/noteFirestore.dart';
+import 'package:gknow/notes.dart';
 import 'package:gknow/profile.dart';
 
 import 'login.dart';
@@ -9,11 +11,12 @@ class AddNote extends StatefulWidget {
   String titleNote;
   String contextNote;
   String noteID;
+  String noteProfile;
 
-  AddNote(this.addUpdateNote, this.titleNote, this.contextNote, this.noteID);
+  AddNote(this.addUpdateNote, this.titleNote, this.contextNote, this.noteID, this.noteProfile);
 
   @override
-  _AddNoteState createState() => _AddNoteState(addUpdateNote, titleNote, contextNote, noteID);
+  _AddNoteState createState() => _AddNoteState(addUpdateNote, titleNote, contextNote, noteID, noteProfile);
 }
 
 class _AddNoteState extends State<AddNote> {
@@ -24,8 +27,9 @@ class _AddNoteState extends State<AddNote> {
   String titleNote;
   String contextNote;
   String noteID;
+  String noteProfile;
 
-  _AddNoteState(this.addUpdateNote, this.titleNote, this.contextNote, this.noteID);
+  _AddNoteState(this.addUpdateNote, this.titleNote, this.contextNote, this.noteID, this.noteProfile);
 
 
   @override
@@ -111,10 +115,16 @@ class _AddNoteState extends State<AddNote> {
                   NoteFirestore().addNote(Login.email, titleControl.text.trim(), contextControl.text.trim())
                   : NoteFirestore().updateNote(noteID, titleControl.text.trim(), contextControl.text.trim());
                   Profile.isTrue = true;
+
+                  noteProfile == "Profile" ?
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Profile()));
+                          builder: (context) => BottomNavigation()))
+                  : Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Notes()));
                 },
                 child: Text(addUpdateNote),
               ),

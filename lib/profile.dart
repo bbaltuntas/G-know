@@ -6,6 +6,7 @@ import 'package:gknow/addNote.dart';
 import 'package:http/http.dart' as http;
 import 'package:gknow/reposApi.dart';
 import 'User.dart';
+import 'bottomNavigation.dart';
 import 'login.dart';
 import 'myDrawer.dart';
 
@@ -81,7 +82,7 @@ class _ProfileState extends State<Profile> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddNote("Add Note", "", "", "")));
+                  builder: (context) => AddNote("Add Note", "", "", "", "Profile")));
         },
         label: Text('Add'),
         icon: Icon(Icons.notes),
@@ -255,13 +256,13 @@ class _ProfileState extends State<Profile> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => Profile()));
+                                  builder: (context) => BottomNavigation()));
                         },
                         onTap: () {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => AddNote("Update Note", userNotesList[index]['title'], userNotesList[index]['context'], userNotesList[index]['id'])));
+                                  builder: (context) => AddNote("Update Note", userNotesList[index]['title'], userNotesList[index]['context'], userNotesList[index]['id'], "Profile")));
                         },
                     ),
                   );

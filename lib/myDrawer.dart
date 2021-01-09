@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gknow/bottomNavigation.dart';
 import 'package:gknow/favoriteUsers.dart';
+import 'package:gknow/notes.dart';
 import 'package:gknow/profile.dart';
 import 'package:gknow/settings.dart';
 
@@ -88,6 +89,14 @@ class _MyDrawerState extends State<MyDrawer> {
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => FavoriteUsers()));
+            },
+          ),
+          ListTile(
+            title: Text('Notes'),
+            leading: Icon(Icons.notes),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => Notes()));
             },
           ),
           ListTile(

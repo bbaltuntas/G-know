@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gknow/bottomNavigation.dart';
 import 'package:gknow/profile.dart';
 import 'package:gknow/userFirestore.dart';
-import 'package:provider/provider.dart';
-import 'authenticationService.dart';
-import 'login.dart';
 
 class ChangeUsername extends StatefulWidget {
 
@@ -58,9 +56,9 @@ class _ChangeUsernameState extends State<ChangeUsername> {
                     borderRadius: BorderRadius.circular(10)),
                 onPressed: () async {
                   UserFirestore().updateUsername(Profile.usernameID, newUsernameControl.text.trim());
-                  context.read<AuthenticationService>().signOut();
+                  Profile.username = newUsernameControl.text.trim();
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => Login()));
+                      builder: (BuildContext context) => BottomNavigation()));
                 },
                 child: Text('Change Username'),
               ),

@@ -47,13 +47,14 @@ class _LoginState extends State<Login> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: screenSize / 30),
             Image.asset(
               'assets/images/profile.png',
               width: deviceOrientation == Orientation.portrait
                   ? screenSize / 2
                   : 0,
             ),
-            SizedBox(height: screenSize / 30),
+            SizedBox(height: screenSize / 25),
             TextField(
               controller: emailControl,
               decoration: InputDecoration(
