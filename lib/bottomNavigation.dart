@@ -12,9 +12,9 @@ class BottomNavigation extends StatefulWidget {
 
 class _BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = MyDrawer.selectionIndex;
-  // static const TextStyle optionStyle =  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
-  List<Widget> _widgetOptions = <Widget>[
+  // static const TextStyle optionStyle =  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static List<Widget> _widgetOptions = <Widget>[
     Profile(),
     Search(),
     NotificationPage()

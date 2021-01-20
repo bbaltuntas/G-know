@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gknow/deleteUser.dart';
 import 'package:gknow/login.dart';
+import 'package:gknow/myDrawer.dart';
 import 'package:gknow/profile.dart';
-import 'package:provider/provider.dart';
 import 'authenticationService.dart';
 import 'changeUsername.dart';
+import 'main.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -17,9 +18,9 @@ class _SettingsState extends State<Settings> {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      drawer: MyDrawer(),
       appBar: AppBar(
-        title: Center(child: Text('Settings')),
+        title: Text('Settings'),
         backgroundColor: Colors.black,
       ),
       body: _buildLayout(screenSize),
@@ -56,9 +57,9 @@ class _SettingsState extends State<Settings> {
               color: Colors.black,
             ),
             onTap: () {
-              context.read<AuthenticationService>().signOut();
+              AuthenticationService().signOut();
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => Login()));
+                  builder: (BuildContext context) => MyApp()));
             },
           ),
           ListTile(
@@ -81,7 +82,7 @@ class _SettingsState extends State<Settings> {
               color: Colors.black,
             ),
             onTap: () {
-              context.read<AuthenticationService>().changePassword();
+              AuthenticationService().changePassword(Login.email);
               // Navigator.of(context).push(MaterialPageRoute(
               //     builder: (BuildContext context) => LanguagesScreen()));
             },

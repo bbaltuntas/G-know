@@ -5,6 +5,8 @@ import 'package:gknow/notes.dart';
 import 'package:gknow/profile.dart';
 import 'package:gknow/settings.dart';
 
+import 'history.dart';
+
 class MyDrawer extends StatefulWidget {
   static int selectionIndex = 0;
 
@@ -25,16 +27,16 @@ class _MyDrawerState extends State<MyDrawer> {
           Container(
             height: deviceOrientation == Orientation.portrait
                 ? (screenSize > 720
-                    ? (screenSize * 2.54) / 5
-                    : (screenSize * 2.54) / 3.5)
+                    ? (screenSize * 2.54) / 6.5
+                    : (screenSize * 2.54) / 4.5)
                 : 45,
             child: DrawerHeader(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    width: 130,
-                    height: 130,
+                    width: 100,
+                    height: 100,
                     child: Image.asset(
                       'assets/images/profile.png',
                       width: deviceOrientation == Orientation.portrait
@@ -84,6 +86,14 @@ class _MyDrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
+            title: Text('Notes'),
+            leading: Icon(Icons.notes),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Notes()));
+            },
+          ),
+          ListTile(
             title: Text('Favorite Users'),
             leading: Icon(Icons.notifications_active),
             onTap: () {
@@ -92,11 +102,11 @@ class _MyDrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
-            title: Text('Notes'),
-            leading: Icon(Icons.notes),
+            title: Text('Search History'),
+            leading: Icon(Icons.history),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => Notes()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => History()));
             },
           ),
           ListTile(

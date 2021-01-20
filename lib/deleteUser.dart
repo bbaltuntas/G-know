@@ -3,7 +3,6 @@ import 'package:gknow/noteFirestore.dart';
 import 'package:gknow/profile.dart';
 import 'package:gknow/userFirestore.dart';
 import 'authenticationService.dart';
-import 'package:provider/provider.dart';
 import 'login.dart';
 
 class Deleteuser extends StatefulWidget {
@@ -20,7 +19,6 @@ class _DeleteuserState extends State<Deleteuser> {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Center(child: Text("Delete User")),
         backgroundColor: Colors.black,
@@ -38,10 +36,10 @@ class _DeleteuserState extends State<Deleteuser> {
           children: [
             SizedBox(height: screenSize / 30),
             Text(
-                "After you click the delete button, your notes, "
-                "favorite users and G-Know membership information will be deleted irreversibly. "
-                "If you are still determined to delete your account, write \"acknowledged\" in the message box "
-                "and click the \"delete\" button. ",
+              "After you click the delete button, your notes, "
+              "favorite users and G-Know membership information will be deleted irreversibly. "
+              "If you are still determined to delete your account, write \"acknowledged\" in the message box "
+              "and click the \"delete\" button. ",
               style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               textAlign: TextAlign.justify,
             ),
@@ -74,11 +72,17 @@ class _DeleteuserState extends State<Deleteuser> {
                   if (deleteControl.text.trim() == "acknowledged") {
                     UserFirestore().deleteUsername(Profile.usernameID);
                     NoteFirestore().deleteNotes(Login.email);
-                    context.read<AuthenticationService>().delete();
+                    AuthenticationService().delete();
+                    final snackBar = SnackBar(
+                        content: Text("Account was deleted successfully!"));
+                    Scaffold.of(context).showSnackBar(snackBar);
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) => Login()));
                   } else {
                     print("Wrong keyword entered!");
+                    final snackBar =
+                        SnackBar(content: Text("Wrong keyword entered!"));
+                    Scaffold.of(context).showSnackBar(snackBar);
                   }
                 },
                 child: Text(

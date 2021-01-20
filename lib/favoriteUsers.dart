@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:gknow/DbHelper.dart';
+import 'package:gknow/myDrawer.dart';
+import 'package:gknow/searchProfile.dart';
 
 class User {
+  int id;
   String username;
   String link;
+  String addControl = "Add Favorite";
 
   User(this.username, this.link);
+
+  Map<String, dynamic> toMap() {
+    var map = Map<String, dynamic>();
+    map["username"] = username;
+    map["link"] = link;
+    return map;
+  }
+
+  User.fromMap(Map<String, dynamic> map) {
+    id = map["id"];
+    username = map["username"];
+    link = map["link"];
+  }
 }
 
 class FavoriteUsers extends StatefulWidget {
@@ -13,22 +31,24 @@ class FavoriteUsers extends StatefulWidget {
 }
 
 class _FavoriteUsersState extends State<FavoriteUsers> {
-  User user1 = User(
-      "bbaltuntas", "https://avatars2.githubusercontent.com/u/57188585?v=4");
-  User user2 = User("mustafamuratcoskun",
-      "https://avatars0.githubusercontent.com/u/15064847?v=4");
-  User user3 =
-      User("ebru", "https://avatars1.githubusercontent.com/u/45464584?v=4");
-  User user4 =
-      User("hbusul", "https://avatars2.githubusercontent.com/u/25043169?v=4");
-  User user5 = User("mabdullahsoyturk",
-      "https://avatars0.githubusercontent.com/u/25618191?v=4");
+  DbHelper _dbHelper;
+
+  @override
+  void initState() {
+    _dbHelper = DbHelper();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      drawer: MyDrawer(),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text("Favorite Users"),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: Colors.black,
@@ -37,39 +57,53 @@ class _FavoriteUsersState extends State<FavoriteUsers> {
           color: Colors.amber,
         ),
       ),
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text("Favorite Users"),
-      ),
       body: _buildLayout(screenSize),
     );
   }
 
   Widget _buildLayout(double screenSize) {
-    List<User> userList = [user1, user2, user3, user4, user5];
-
     return Container(
       child: Center(
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                  itemCount: userList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: EdgeInsets.all(screenSize / 80),
-                      child: Card(
-                        child: ListTile(
-                            leading: Image.network(userList[index].link),
-                            title: Text(userList[index].username),
-                            trailing: Icon(
-                              Icons.clear,
-                              color: Colors.amber,
-                            )),
-                      ),
-                    );
-                  }),
-            ),
+                child: FutureBuilder(
+              future: _dbHelper.getUsers(),
+              builder:
+                  (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
+                if (!snapshot.hasData) return CircularProgressIndicator();
+                if (snapshot.data.isEmpty) return  Center(
+                    child: Text("Favorite User List is Empty",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold)));
+                return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      User user = snapshot.data[index];
+                      return Padding(
+                        padding: EdgeInsets.all(screenSize / 80),
+                        child: Card(
+                          child: ListTile(
+                            leading: Image.network(user.link),
+                            title: Text(user.username),
+                            trailing: RaisedButton(
+                              onPressed: () async {
+                                _dbHelper.removeUser(user.id);
+                                SearchProfile.isAdded = false;
+                                setState(() {});
+                              },
+                              child: Icon(
+                                Icons.clear,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    });
+              },
+            )),
           ],
         ),
       ),

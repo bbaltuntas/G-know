@@ -3,7 +3,6 @@ import 'package:gknow/bottomNavigation.dart';
 import 'package:gknow/noteFirestore.dart';
 import 'package:gknow/notes.dart';
 import 'package:gknow/profile.dart';
-
 import 'login.dart';
 
 class AddNote extends StatefulWidget {
@@ -13,24 +12,26 @@ class AddNote extends StatefulWidget {
   String noteID;
   String noteProfile;
 
-  AddNote(this.addUpdateNote, this.titleNote, this.contextNote, this.noteID, this.noteProfile);
+  AddNote(this.addUpdateNote, this.titleNote, this.contextNote, this.noteID,
+      this.noteProfile);
 
   @override
-  _AddNoteState createState() => _AddNoteState(addUpdateNote, titleNote, contextNote, noteID, noteProfile);
+  _AddNoteState createState() =>
+      _AddNoteState(addUpdateNote, titleNote, contextNote, noteID, noteProfile);
 }
 
 class _AddNoteState extends State<AddNote> {
   TextEditingController titleControl = new TextEditingController();
   TextEditingController contextControl = new TextEditingController();
-  
+
   String addUpdateNote;
   String titleNote;
   String contextNote;
   String noteID;
   String noteProfile;
 
-  _AddNoteState(this.addUpdateNote, this.titleNote, this.contextNote, this.noteID, this.noteProfile);
-
+  _AddNoteState(this.addUpdateNote, this.titleNote, this.contextNote,
+      this.noteID, this.noteProfile);
 
   @override
   void initState() {
@@ -47,7 +48,6 @@ class _AddNoteState extends State<AddNote> {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Center(child: Text(addUpdateNote)),
         backgroundColor: Colors.black,
@@ -57,34 +57,34 @@ class _AddNoteState extends State<AddNote> {
   }
 
   Widget _buildLayout(double screenSize, Orientation deviceOrientation) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(screenSize / 34),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: screenSize / 30),
-            TextField(
-              controller: titleControl,
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.grey),
+    return ListView(
+      children: [
+        Container(
+          padding: EdgeInsets.all(screenSize / 34),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: screenSize / 30),
+              TextField(
+                controller: titleControl,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    borderSide: BorderSide(color: Colors.amberAccent),
+                  ),
+                  border: OutlineInputBorder(),
+                  labelText: 'Enter your title',
+                  labelStyle: TextStyle(color: Colors.grey),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                  borderSide: BorderSide(color: Colors.amberAccent),
-                ),
-                border: OutlineInputBorder(),
-                labelText: 'Enter your title',
-                labelStyle: TextStyle(color: Colors.grey),
               ),
-            ),
-            SizedBox(height: screenSize / 40),
-            Container(
+              SizedBox(height: screenSize / 40),
+              Container(
                 child: TextField(
                   controller: contextControl,
-
                   minLines: 10,
                   maxLines: 15,
                   autocorrect: false,
@@ -101,37 +101,42 @@ class _AddNoteState extends State<AddNote> {
                     ),
                   ),
                 ),
-            ),
-            SizedBox(height: screenSize / 40),
-            Container(
-              width: screenSize,
-              height: screenSize/8,
-              child: FlatButton(
-                color: Colors.amberAccent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                onPressed: () {
-                  addUpdateNote == "Add Note" ?
-                  NoteFirestore().addNote(Login.email, titleControl.text.trim(), contextControl.text.trim())
-                  : NoteFirestore().updateNote(noteID, titleControl.text.trim(), contextControl.text.trim());
-                  Profile.isTrue = true;
-
-                  noteProfile == "Profile" ?
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BottomNavigation()))
-                  : Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Notes()));
-                },
-                child: Text(addUpdateNote),
               ),
-            ),
-          ],
+              SizedBox(height: screenSize / 40),
+              Container(
+                width: screenSize,
+                height: screenSize / 8,
+                child: FlatButton(
+                  color: Colors.amberAccent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  onPressed: () async {
+                    addUpdateNote == "Add Note"
+                        ? await NoteFirestore().addNote(
+                            Login.email,
+                            titleControl.text.trim(),
+                            contextControl.text.trim())
+                        : await NoteFirestore().updateNote(
+                            noteID,
+                            titleControl.text.trim(),
+                            contextControl.text.trim());
+                    Profile.isTrue = true;
+
+                    noteProfile == "Profile"
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BottomNavigation()))
+                        : Navigator.push(context,
+                            MaterialPageRoute(builder: (context) => Notes()));
+                  },
+                  child: Text(addUpdateNote),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

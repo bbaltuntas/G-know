@@ -1,49 +1,46 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'authenticationService.dart';
+import 'package:gknow/myDrawer.dart';
 import 'bottomNavigation.dart';
 import 'login.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  static var isLogin = false;
+class MyApp extends StatefulWidget {
+  static bool isLogin = false;
 
   @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<AuthenticationService>(
-          create: (_) => AuthenticationService(FirebaseAuth.instance),
-        ),
-        StreamProvider(
-          create: (context) => context.read<AuthenticationService>().authStateChanges,
-        )
-      ],
-      child: MaterialApp(
-        home: AuthenticationWrapper(),
-        debugShowCheckedModeBanner: false,
+    return MaterialApp(
+      home: Scaffold(
+        body: AuthenticationWrapper(),
       ),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-
 class AuthenticationWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final firebaseUser = context.watch<User>();
+    final firebaseUser = FirebaseAuth.instance.currentUser;
 
     if (firebaseUser != null) {
       MyApp.isLogin = true;
+      MyDrawer.selectionIndex = 0;
       return BottomNavigation();
     }
+
     return Login();
   }
 }

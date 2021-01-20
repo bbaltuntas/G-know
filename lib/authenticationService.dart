@@ -1,45 +1,52 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gknow/login.dart';
+import 'package:flutter/material.dart';
 
 class AuthenticationService {
-  final FirebaseAuth _firebaseAuth;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
-  AuthenticationService(this._firebaseAuth);
-
-  Stream<User> get authStateChanges => _firebaseAuth.idTokenChanges();
-
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
+  signOut() async {
+    await _auth.signOut();
   }
 
-  Future<void> delete() async {
-    await _firebaseAuth.currentUser.delete();
+  delete() async {
+    await _auth.currentUser.delete();
   }
 
-  Future<String> changePassword() async {
+  changePassword(String email) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(email: Login.email);
+      await _auth.sendPasswordResetEmail(email: email);
       return "Password Changed";
     } on FirebaseAuthException catch (e) {
       return e.message;
     }
   }
 
-  Future<String> signIn({String email, String password}) async {
+  Future<bool> signIn({String email, String password}) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      return "Signed in";
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      return false;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+      return true;
     }
   }
 
-  Future<String> signUp({String email, String password}) async {
+  Future<bool> signUp({String email, String password}) async {
     try {
-      await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-      return "Signed up";
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      print("Signed up");
+      return false;
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      print(e.message);
+      return true;
     }
   }
 }

@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:gknow/noteFirestore.dart';
-import 'package:gknow/addNote.dart';
+import 'package:gknow/login.dart';
+import 'package:gknow/userFirestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:gknow/reposApi.dart';
 import 'User.dart';
+import 'addNote.dart';
 import 'bottomNavigation.dart';
-import 'login.dart';
 import 'myDrawer.dart';
+import 'noteFirestore.dart';
 
 class Repos {
   final String name;
@@ -50,6 +50,7 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
+    UserFirestore().getUsername(Login.email);
     getReposFromApi();
     fetchNotesFirestore();
   }
@@ -72,92 +73,91 @@ class _ProfileState extends State<Profile> {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        drawer: MyDrawer(),
-        appBar: AppBar(
-          title: Center(child: Text(Profile.username)),
-          backgroundColor: Colors.black,
-        ),
+      drawer: MyDrawer(),
+      appBar: AppBar(
+        title: Text(Profile.username),
+        backgroundColor: Colors.black,
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddNote("Add Note", "", "", "", "Profile")));
+                  builder: (context) =>
+                      AddNote("Add Note", "", "", "", "Profile")));
         },
         label: Text('Add'),
         icon: Icon(Icons.notes),
         backgroundColor: Colors.black,
       ),
-        body: FutureBuilder(
-            future: getUser(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return _nullUserPart(screenSize);
-              }
-              if (snapshot.hasData) {
-                return (deviceOrientation == Orientation.portrait
-                    ? _buildVerticalLayout(
-                        screenSize, deviceOrientation, snapshot)
-                    : _buildHorizontalLayout(
-                        screenSize, deviceOrientation, snapshot));
-              } else {
-                return Center(
-                    child: CircularProgressIndicator(
-                        valueColor:
-                            new AlwaysStoppedAnimation<Color>(Colors.black)));
-              }
-            }),
+      body: FutureBuilder(
+          future: getUser(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return _nullUserPart(screenSize);
+            }
+            if (snapshot.hasData) {
+              return (deviceOrientation == Orientation.portrait
+                  ? _buildVerticalLayout(
+                      screenSize, deviceOrientation, snapshot)
+                  : _buildHorizontalLayout(
+                      screenSize, deviceOrientation, snapshot));
+            } else {
+              return Center(
+                  child: CircularProgressIndicator(
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(Colors.black)));
+            }
+          }),
     );
   }
 
   Widget _nullUserPart(double screenSize) {
     return Container(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          child: Icon(
+            Icons.error,
+            size: 75,
+          ),
+        ),
+        Column(
           children: [
-            Container(
-              child: Icon(
-                Icons.error,
-                size: 75,
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Center(
+                child: Text(
+                  "Something went wrong!",
+                  style: TextStyle(
+                      color: Colors.amberAccent,
+                      fontSize: 23,
+                      fontStyle: FontStyle.italic),
+                ),
               ),
             ),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Center(
-                    child: Text(
-                      "Something went wrong!",
-                      style: TextStyle(
-                          color: Colors.amberAccent,
-                          fontSize: 23,
-                          fontStyle: FontStyle.italic),
-                    ),
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Center(
+                child: Text(
+                  "These things could be happened: ",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontStyle: FontStyle.italic),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Center(
-                    child: Text(
-                      "These things could be happened: ",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontStyle: FontStyle.italic),
-                    ),
-                  ),
-                ),
-                _errorList("The given username does not exist on github"),
-                _errorList("Entered wrong password or/and username"),
-                _errorList("GitHub REST API limit is exceeded"),
-                SizedBox(height: screenSize / 10),
-                _errorList("Please be sure your username and password is correct and re-login. "
-                    "If this problem still continue wait 1 hour for reset of GitHub REST API limit and then re-login."),
-              ],
+              ),
             ),
+            _errorList("The given username does not exist on github"),
+            _errorList("GitHub REST API limit is exceeded"),
+            SizedBox(height: screenSize / 10),
+            _errorList("Please be sure your username is in GitHub accounts. "
+                "If this problem still continue wait 1 hour for reset of GitHub REST API limit and then re-login."),
           ],
-        ));
+        ),
+      ],
+    ));
   }
 
   Widget _errorList(String text) {
@@ -169,7 +169,8 @@ class _ProfileState extends State<Profile> {
           style: TextStyle(
               color: Colors.black,
               fontSize: 14,
-              fontStyle: FontStyle.italic, fontWeight: FontWeight.bold),
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -251,10 +252,11 @@ class _ProfileState extends State<Profile> {
                   child: FlatButton(
                     onPressed: () {
                       Profile.isTrue = false;
+                      MyDrawer.selectionIndex = 0;
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Profile()));
+                              builder: (context) => BottomNavigation()));
                     },
                     child: Text(
                       'Repositories',
@@ -266,10 +268,11 @@ class _ProfileState extends State<Profile> {
                   child: FlatButton(
                     onPressed: () {
                       Profile.isTrue = true;
+                      MyDrawer.selectionIndex = 0;
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Profile()));
+                              builder: (context) => BottomNavigation()));
                     },
                     child: Text(
                       'Notes',
@@ -280,7 +283,7 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          Profile.isTrue ?  _notesList(screenSize) : _reposList()
+          Profile.isTrue ? _notesList(screenSize) : _reposList()
         ],
       ),
     );
@@ -306,35 +309,40 @@ class _ProfileState extends State<Profile> {
 
   Widget _notesList(double screenSize) {
     return Expanded(
-            child: ListView.builder(
-                itemCount: userNotesList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    child: ListTile(
-                        leading: Icon(Icons.message_sharp),
-                        title: Text(userNotesList[index]['title']),
-                        subtitle: Text(userNotesList[index]['context']),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: Colors.amber,
-                        ),
-                        onLongPress: () {
-                          NoteFirestore().deleteNote(userNotesList[index]['id']);
-                          Profile.isTrue = true;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BottomNavigation()));
-                        },
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddNote("Update Note", userNotesList[index]['title'], userNotesList[index]['context'], userNotesList[index]['id'], "Profile")));
-                        },
-                    ),
-                  );
-            }),
+      child: ListView.builder(
+          itemCount: userNotesList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              child: ListTile(
+                leading: Icon(Icons.message_sharp),
+                title: Text(userNotesList[index]['title']),
+                subtitle: Text(userNotesList[index]['context']),
+                trailing: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: Colors.amber,
+                ),
+                onLongPress: () {
+                  NoteFirestore().deleteNote(userNotesList[index]['id']);
+                  Profile.isTrue = true;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation()));
+                },
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddNote(
+                              "Update Note",
+                              userNotesList[index]['title'],
+                              userNotesList[index]['context'],
+                              userNotesList[index]['id'],
+                              "Profile")));
+                },
+              ),
+            );
+          }),
     );
   }
 

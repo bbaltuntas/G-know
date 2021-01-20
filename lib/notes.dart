@@ -6,7 +6,6 @@ import 'login.dart';
 import 'myDrawer.dart';
 
 class Notes extends StatefulWidget {
-
   @override
   _NotesState createState() => _NotesState();
 }
@@ -38,10 +37,9 @@ class _NotesState extends State<Notes> {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       drawer: MyDrawer(),
       appBar: AppBar(
-        title: Center(child: Text("Notes")),
+        title: Text("Notes"),
         backgroundColor: Colors.black,
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -49,7 +47,8 @@ class _NotesState extends State<Notes> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => AddNote("Add Note", "", "", "", "Notes")));
+                  builder: (context) =>
+                      AddNote("Add Note", "", "", "", "Notes")));
         },
         label: Text('Add'),
         icon: Icon(Icons.notes),
@@ -63,7 +62,7 @@ class _NotesState extends State<Notes> {
     return Expanded(
       child: Column(
         children: [
-         _notesList(screenSize),
+          _notesList(screenSize),
         ],
       ),
     );
@@ -83,18 +82,21 @@ class _NotesState extends State<Notes> {
                   Icons.arrow_forward_ios_rounded,
                   color: Colors.amber,
                 ),
-                onLongPress: () {
-                  NoteFirestore().deleteNote(userNotesList[index]['id']);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Notes()));
+                onLongPress: () async {
+                  await NoteFirestore().deleteNote(userNotesList[index]['id']);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Notes()));
                 },
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddNote("Update Note", userNotesList[index]['title'], userNotesList[index]['context'], userNotesList[index]['id'], "Notes")));
+                          builder: (context) => AddNote(
+                              "Update Note",
+                              userNotesList[index]['title'],
+                              userNotesList[index]['context'],
+                              userNotesList[index]['id'],
+                              "Notes")));
                 },
               ),
             );

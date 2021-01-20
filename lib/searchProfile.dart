@@ -1,14 +1,19 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:gknow/DbHelper.dart';
+import 'package:gknow/DbHelperHistory.dart';
+import 'package:gknow/bottomNavigation.dart';
 import 'package:gknow/repos.dart';
 import 'package:gknow/reposApi.dart';
-
 import 'package:http/http.dart' as http;
 import 'User.dart';
+import 'package:gknow/favoriteUsers.dart' as userFav;
+
+import 'myDrawer.dart';
 
 class SearchProfile extends StatefulWidget {
   String searchName;
+  static var isAdded = false;
 
   SearchProfile(this.searchName);
 
@@ -17,6 +22,9 @@ class SearchProfile extends StatefulWidget {
 }
 
 class _SearchProfileState extends State<SearchProfile> {
+  String searchName;
+  String addControl = "Add Favorite";
+
   Future<User> getUser() async {
     var uri = ReposApi.url + "users/" + searchName + ReposApi.query;
     final response = await http.get(Uri.encodeFull(uri));
@@ -28,14 +36,22 @@ class _SearchProfileState extends State<SearchProfile> {
     }
   }
 
-  String searchName;
-
   _SearchProfileState(this.searchName);
 
   List<Repos> reposList = List<Repos>();
 
+  DbHelper _dbHelper;
+  DbHelperHistory _dbHelperHistory;
+
   @override
   void initState() {
+    _dbHelperHistory = DbHelperHistory();
+    _dbHelper = DbHelper();
+    _dbHelper.isAdded(searchName);
+    if (SearchProfile.isAdded == true) {
+      addControl = "Added";
+    }
+
     super.initState();
     getReposFromApi();
   }
@@ -46,39 +62,26 @@ class _SearchProfileState extends State<SearchProfile> {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Center(child: Text(searchName)),
+          backgroundColor: Colors.black,
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            MyDrawer.selectionIndex = 1;
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => BottomNavigation()));
+          },
+          label: Text("Go Back"),
+          icon: Icon(Icons.arrow_back),
           backgroundColor: Colors.black,
         ),
         body: FutureBuilder(
             future: getUser(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                return Container(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      child: Icon(
-                        Icons.error,
-                        size: 75,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Center(
-                        child: Text(
-                          "Not Found.",
-                          style: TextStyle(
-                              color: Colors.amberAccent,
-                              fontSize: 23,
-                              fontStyle: FontStyle.italic),
-                        ),
-                      ),
-                    ),
-                  ],
-                ));
+                return _nullUserPart(screenSize);
               }
               if (snapshot.hasData) {
                 return (deviceOrientation == Orientation.portrait
@@ -97,6 +100,9 @@ class _SearchProfileState extends State<SearchProfile> {
 
   Widget _informationPart(double screenSize, Orientation deviceOrientation,
       AsyncSnapshot snapshot) {
+    _dbHelperHistory
+        .insertHistory(userFav.User(searchName, snapshot.data.avatar_url));
+
     return Expanded(
       child: Column(
         children: [
@@ -151,9 +157,15 @@ class _SearchProfileState extends State<SearchProfile> {
                       width: screenSize / 2,
                       child: FlatButton(
                         color: Colors.black,
-                        onPressed: () {},
+                        onPressed: () {
+                          _dbHelper.insertUser(userFav.User(
+                              searchName, snapshot.data.avatar_url));
+                          setState(() {
+                            addControl = "Added";
+                          });
+                        },
                         child: Text(
-                          'Add Favorite',
+                          addControl,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -164,6 +176,70 @@ class _SearchProfileState extends State<SearchProfile> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _nullUserPart(double screenSize) {
+    return Container(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          child: Icon(
+            Icons.error,
+            size: 75,
+          ),
+        ),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Center(
+                child: Text(
+                  "Something went wrong!",
+                  style: TextStyle(
+                      color: Colors.amberAccent,
+                      fontSize: 23,
+                      fontStyle: FontStyle.italic),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Center(
+                child: Text(
+                  "These things could be happened: ",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontStyle: FontStyle.italic),
+                ),
+              ),
+            ),
+            _errorList("The given username does not exist on github"),
+            _errorList("GitHub REST API limit is exceeded"),
+            SizedBox(height: screenSize / 10),
+            _errorList("Please be sure your username is in GitHub accounts. "
+                "If this problem still continue wait 1 hour for reset of GitHub REST API limit."),
+          ],
+        ),
+      ],
+    ));
+  }
+
+  Widget _errorList(String text) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }

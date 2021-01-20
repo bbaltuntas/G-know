@@ -4,7 +4,6 @@ import 'package:gknow/profile.dart';
 import 'package:gknow/userFirestore.dart';
 
 class ChangeUsername extends StatefulWidget {
-
   @override
   _ChangeUsernameState createState() => _ChangeUsernameState();
 }
@@ -18,7 +17,6 @@ class _ChangeUsernameState extends State<ChangeUsername> {
     var screenSize = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Center(child: Text('Change Username')),
         backgroundColor: Colors.black,
@@ -49,13 +47,14 @@ class _ChangeUsernameState extends State<ChangeUsername> {
             SizedBox(height: screenSize / 40),
             Container(
               width: screenSize,
-              height: screenSize/8,
+              height: screenSize / 8,
               child: FlatButton(
                 color: Colors.amberAccent,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
                 onPressed: () async {
-                  UserFirestore().updateUsername(Profile.usernameID, newUsernameControl.text.trim());
+                  UserFirestore().updateUsername(
+                      Profile.usernameID, newUsernameControl.text.trim());
                   Profile.username = newUsernameControl.text.trim();
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => BottomNavigation()));
