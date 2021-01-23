@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gknow/main.dart';
 import 'package:gknow/myDrawer.dart';
-import 'package:gknow/notification.dart';
+import 'package:gknow/advice.dart';
 import 'profile.dart';
 import 'search.dart';
 
@@ -13,11 +13,10 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int _selectedIndex = MyDrawer.selectionIndex;
 
-  // static const TextStyle optionStyle =  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     Profile(),
     Search(),
-    NotificationPage()
+    AdvicePage()
   ];
 
   void _onItemTapped(int index) {
@@ -45,7 +44,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.message_sharp),
-                    label: 'Notification',
+                    label: 'Advices',
                   ),
                 ],
                 currentIndex: _selectedIndex,

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gknow/deleteUser.dart';
+import 'package:gknow/licences.dart';
 import 'package:gknow/login.dart';
 import 'package:gknow/myDrawer.dart';
 import 'package:gknow/profile.dart';
+import 'package:gknow/termsOfServices.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
 import 'authenticationService.dart';
 import 'changeUsername.dart';
+import 'backgroundTask.dart';
 import 'main.dart';
 
 class Settings extends StatefulWidget {
@@ -13,6 +19,39 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  Future<Widget> _onSelectNotification(String payload) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewScreen(),
+      ),
+    );
+  }
+
+  SharedPreferences prefs;
+  bool _isInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialization();
+  }
+
+  _loadInitialization() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isInitialized = (prefs.getBool('isInitialized') ?? false);
+    });
+  }
+
+  _makeInitialized() {
+    setState(() {
+      _isInitialized = true;
+      prefs.setBool('isInitialized', _isInitialized);
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size.width;
@@ -23,11 +62,11 @@ class _SettingsState extends State<Settings> {
         title: Text('Settings'),
         backgroundColor: Colors.black,
       ),
-      body: _buildLayout(screenSize),
+      body: _buildLayout(context, screenSize),
     );
   }
 
-  Widget _buildLayout(double screenSize) {
+  Widget _buildLayout(BuildContext context, double screenSize) {
     return Container(
       child: SingleChildScrollView(
           child: Column(
@@ -56,8 +95,8 @@ class _SettingsState extends State<Settings> {
               Icons.subdirectory_arrow_left_sharp,
               color: Colors.black,
             ),
-            onTap: () {
-              AuthenticationService().signOut();
+            onTap: () async {
+              await AuthenticationService().signOut();
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => MyApp()));
             },
@@ -83,8 +122,6 @@ class _SettingsState extends State<Settings> {
             ),
             onTap: () {
               AuthenticationService().changePassword(Login.email);
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
             },
           ),
           Divider(
@@ -109,27 +146,65 @@ class _SettingsState extends State<Settings> {
             ),
           ),
           ListTile(
-            title: Text('News'),
-            subtitle: Text('From your GitHub account'),
+            title: Text('Subscribe Notifications'),
+            subtitle: Text('Initialize notification settings'),
             leading: Icon(
-              Icons.notifications_active,
+              Icons.notification_important_outlined,
               color: Colors.black,
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
+              _isInitialized = (prefs.getBool('isInitialized') ?? false);
+              if (!_isInitialized) {
+                var initializationSettingsAndroid =
+                AndroidInitializationSettings('launch_background');
+                var initializationSettingsIOs = IOSInitializationSettings();
+                var initSetttings = InitializationSettings(
+                  android: initializationSettingsAndroid,
+                  iOS: initializationSettingsIOs,
+                  macOS: null,
+                );
+
+                flutterLocalNotificationsPlugin.initialize(
+                  initSetttings,
+                  onSelectNotification: _onSelectNotification,
+                );
+                Workmanager.initialize(
+                  callbackDispatcher,
+                  isInDebugMode: false,
+                );
+                _makeInitialized();
+                print("Notification settings were initialized successfully");
+                final snackBar =
+                SnackBar(content: Text("Notification settings were initialized successfully"));
+                Scaffold.of(context).showSnackBar(snackBar);
+              } else {
+                print("Notification settings were already initialized");
+                final snackBar =
+                SnackBar(content: Text("Notification settings were already initialized"));
+                Scaffold.of(context).showSnackBar(snackBar);
+              }
+
             },
           ),
           ListTile(
-            title: Text('Community'),
-            subtitle: Text('From your favourite users'),
+            title: Text('Background Tasks'),
+            subtitle: Text('Change your preferences about notifications'),
             leading: Icon(
               Icons.notifications_active,
               color: Colors.black,
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
+              _isInitialized = (prefs.getBool('isInitialized') ?? false);
+              if (_isInitialized) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => BackgroundTask()));
+              } else {
+                print("Notification settings not initialized");
+                final snackBar =
+                SnackBar(content: Text("Please, initialize notification settings from up"));
+                Scaffold.of(context).showSnackBar(snackBar);
+              }
+
             },
           ),
           Divider(
@@ -161,8 +236,8 @@ class _SettingsState extends State<Settings> {
               color: Colors.black,
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => TermsOfServices()));
             },
           ),
           ListTile(
@@ -173,8 +248,8 @@ class _SettingsState extends State<Settings> {
               color: Colors.black,
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => LanguagesScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => OpenSourceLicences()));
             },
           ),
           Divider(
@@ -199,6 +274,48 @@ class _SettingsState extends State<Settings> {
           ),
         ],
       )),
+    );
+  }
+}
+
+class NewScreen extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    var deviceOrientation = MediaQuery.of(context).orientation;
+    var screenSize = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("We Miss You !"),
+        backgroundColor: Colors.black,
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            SizedBox(height: screenSize / 5),
+            Container(
+              width: screenSize / 2,
+              height: screenSize / 2,
+              child: Image.asset(
+                'assets/images/profile.png',
+                width:
+                deviceOrientation == Orientation.portrait ? screenSize / 2 : 0,
+              ),
+            ),
+            SizedBox(height: screenSize / 15),
+            Text(
+              "Welcome, long time no see !",
+              style: TextStyle(
+                fontSize: 18,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

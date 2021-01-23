@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gknow/main.dart';
 import 'package:gknow/noteFirestore.dart';
 import 'package:gknow/profile.dart';
 import 'package:gknow/userFirestore.dart';
@@ -68,16 +69,16 @@ class _DeleteuserState extends State<Deleteuser> {
                 color: Colors.red,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
-                onPressed: () {
+                onPressed: () async {
                   if (deleteControl.text.trim() == "acknowledged") {
-                    UserFirestore().deleteUsername(Profile.usernameID);
-                    NoteFirestore().deleteNotes(Login.email);
-                    AuthenticationService().delete();
+                    await UserFirestore().deleteUsername(Profile.usernameID);
+                    await NoteFirestore().deleteNotes(Login.email);
+                    await AuthenticationService().delete();
                     final snackBar = SnackBar(
                         content: Text("Account was deleted successfully!"));
                     Scaffold.of(context).showSnackBar(snackBar);
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Login()));
+                        MaterialPageRoute(builder: (context) => MyApp()));
                   } else {
                     print("Wrong keyword entered!");
                     final snackBar =

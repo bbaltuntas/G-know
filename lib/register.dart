@@ -5,6 +5,7 @@ import 'package:gknow/login.dart';
 import 'package:gknow/main.dart';
 import 'package:gknow/myDrawer.dart';
 import 'package:gknow/userFirestore.dart';
+import 'adviceFirestore.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -99,11 +100,12 @@ class _RegisterState extends State<Register> {
                         var hasError = await AuthenticationService().signUp(
                             email: emailControl.text.trim(),
                             password: passwordControl.text.trim());
-                        UserFirestore().addUsername(
+                        await UserFirestore().addUsername(
                             email: emailControl.text.trim(),
                             password: passwordControl.text.trim(),
                             username: usernameControl.text.trim());
                         Login.email = emailControl.text.trim();
+                        await UserFirestore().getUsername(Login.email);
                         if (!hasError) {
                           final snackBar = SnackBar(
                               content:

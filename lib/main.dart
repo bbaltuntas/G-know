@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gknow/myDrawer.dart';
+import 'backgroundTask.dart';
 import 'bottomNavigation.dart';
 import 'login.dart';
 
@@ -13,12 +15,17 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   static bool isLogin = false;
+  static List adviceList = [];
 
   @override
   _MyAppState createState() => _MyAppState();
 }
 
+
 class _MyAppState extends State<MyApp> {
+  @override
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,3 +51,4 @@ class AuthenticationWrapper extends StatelessWidget {
     return Login();
   }
 }
+

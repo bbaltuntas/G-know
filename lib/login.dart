@@ -6,6 +6,8 @@ import 'package:gknow/main.dart';
 import 'package:gknow/register.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
+import 'package:gknow/userFirestore.dart';
+import 'adviceFirestore.dart';
 
 class Login extends StatefulWidget {
   static String email;
@@ -165,7 +167,7 @@ class _LoginState extends State<Login> {
                             email: emailControl.text.trim(),
                             password: passwordControl.text.trim());
                         Login.email = emailControl.text.trim();
-
+                        await UserFirestore().getUsername(Login.email);
                         if (hasError) {
                           final snackBar = SnackBar(
                               content: Text(

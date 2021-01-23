@@ -77,7 +77,7 @@ class _MyDrawerState extends State<MyDrawer> {
             },
           ),
           ListTile(
-            title: Text('Notifications'),
+            title: Text('Advices'),
             leading: Icon(Icons.message_rounded),
             onTap: () {
               MyDrawer.selectionIndex = 2;

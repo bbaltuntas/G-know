@@ -14,8 +14,6 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  DbHelperHistory _dbHelperHistory;
-
   TextEditingController searchControl = new TextEditingController();
 
   String _connectionStatus = 'Unknown';
@@ -25,7 +23,6 @@ class _SearchState extends State<Search> {
   @override
   void initState() {
     super.initState();
-    _dbHelperHistory = DbHelperHistory();
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -114,7 +111,7 @@ class _SearchState extends State<Search> {
                     width: screenSize,
                     height: screenSize / 8,
                     child: FlatButton(
-                      color: Colors.green,
+                      color: Colors.amberAccent,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       onPressed: () {

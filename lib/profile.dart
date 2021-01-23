@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:gknow/login.dart';
-import 'package:gknow/userFirestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:gknow/reposApi.dart';
 import 'User.dart';
@@ -50,7 +49,6 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    UserFirestore().getUsername(Login.email);
     getReposFromApi();
     fetchNotesFirestore();
   }
@@ -303,7 +301,8 @@ class _ProfileState extends State<Profile> {
                     color: Colors.amber,
                   )),
             );
-          }),
+          }
+      ),
     );
   }
 

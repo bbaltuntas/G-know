@@ -35,8 +35,8 @@ class UserFirestore {
     }
   }
 
-  getUsername(String email) {
-    return usernames.where('email', isEqualTo: email).get().then((value) {
+  getUsername(String email) async {
+    return await usernames.where('email', isEqualTo: email).get().then((value) {
       print("Username Found");
       Profile.username = value.docs[0].get('username').toString();
       Profile.usernameID = value.docs[0].id;
