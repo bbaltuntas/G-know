@@ -73,7 +73,7 @@ class _FavoriteUsersState extends State<FavoriteUsers> {
                   (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
                 if (!snapshot.hasData) return CircularProgressIndicator();
                 if (snapshot.data.isEmpty) return  Center(
-                    child: Text("Favorite User List is Empty",
+                    child: Text("Favorite Users List is Empty",
                         style: TextStyle(
                             fontSize: 18,
                             fontStyle: FontStyle.italic,

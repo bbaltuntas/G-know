@@ -3,6 +3,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:gknow/deleteUser.dart';
 import 'package:gknow/licences.dart';
 import 'package:gknow/login.dart';
+import 'package:gknow/miss.dart';
 import 'package:gknow/myDrawer.dart';
 import 'package:gknow/profile.dart';
 import 'package:gknow/termsOfServices.dart';
@@ -23,7 +24,7 @@ class _SettingsState extends State<Settings> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => NewScreen(),
+        builder: (context) => Miss(),
       ),
     );
   }
@@ -207,6 +208,18 @@ class _SettingsState extends State<Settings> {
 
             },
           ),
+          ListTile(
+            title: Text('Miss Page'),
+            subtitle: Text('To show this page when notification clicked' ),
+            leading: Icon(
+              Icons.all_inclusive_sharp,
+              color: Colors.black,
+            ),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Miss()));
+            },
+          ),
           Divider(
             height: 20,
             thickness: 2,
@@ -278,44 +291,3 @@ class _SettingsState extends State<Settings> {
   }
 }
 
-class NewScreen extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
-    var deviceOrientation = MediaQuery.of(context).orientation;
-    var screenSize = MediaQuery.of(context).size.width;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("We Miss You !"),
-        backgroundColor: Colors.black,
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(height: screenSize / 5),
-            Container(
-              width: screenSize / 2,
-              height: screenSize / 2,
-              child: Image.asset(
-                'assets/images/profile.png',
-                width:
-                deviceOrientation == Orientation.portrait ? screenSize / 2 : 0,
-              ),
-            ),
-            SizedBox(height: screenSize / 15),
-            Text(
-              "Welcome, long time no see !",
-              style: TextStyle(
-                fontSize: 18,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}

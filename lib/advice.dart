@@ -3,28 +3,15 @@ import 'package:gknow/adviceFirestore.dart';
 import 'package:gknow/myDrawer.dart';
 import 'showAdvice.dart';
 import 'main.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-
-Future<void> _configureLocalTimeZone() async {
-  tz.initializeTimeZones();
-  var turkey = tz.getLocation('Europe/Istanbul');
-  tz.setLocalLocation(turkey);
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await _configureLocalTimeZone();
 }
 
 class AdvicePage extends StatefulWidget {
   @override
   _AdvicePageState createState() => _AdvicePageState();
 }
-
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPluginSecond =
-    FlutterLocalNotificationsPlugin();
 
 class _AdvicePageState extends State<AdvicePage> {
   @override
