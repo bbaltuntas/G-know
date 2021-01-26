@@ -3,25 +3,19 @@
 G-Know is a flutter application devloped via using firebase, firestore and public api (in this case it is GitHub's api).
 
 ## You can:
-* Get notification about your GitHub account when you get a star or/and fork to your repository
-* Get notification about your Github account when you have a new follower
+* Register and login into your account
+* See your profile with the information of your repositories and notes
+* Fetch advices from firestore database
 * Create a list with your favorite users
-* Get notification from your favorite users when they share a repository
-* See any user's profile with their repository names and with their main information
-* Save your excellent ideas in the note part of your profile
+* Keep your search history on your local database
+* See any user's profile with their repository names and with their profile and repositories information
+* Save your ideas in the note part of your profile
+* Create a reminder hourly or daily and get notification
 
 ## Getting Started
 ![Profile - Search - Notifications](ScreenShots/profile-search-notifications.png)
 ![Drawer - Search Profile - Settings](ScreenShots/drawer-searchProfile-settings.png)
 
-## Information about app:
-**1-** First you should register and then you can login.<br>
-**2-** There is a problem when you change your username. You have login two times to change your username.<br>
-**3-** To see the images you should be connected to the Internet because we used networkImage widget. 
-   (And you should wait a bit for loading of networkImages.)<br>
-**4-** To see the example of how other user's profile will look like, on the search history part of search page
-   you can click the user named "mustafamuratcoskun".<br>
-   
 ## Parts of the project:
 **A. User Interface:** In this part, it is expected that build up the UI of the app.<br>
 **B. Getting Data from the Web:** In this part, it is expected that modify the app so that it can get the necessary data
@@ -31,4 +25,3 @@ from the web API into both a local database and remote database on Cloud Firesto
 display the information.<br>
 **D. Services, Notifications, and Broadcast Receivers:** In this part, it is expected that modify the app so that it uses
 services and broadcast receivers as well as a notification system.<br>
-   
