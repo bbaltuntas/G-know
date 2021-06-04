@@ -37,7 +37,7 @@ class _HistoryState extends State<History> {
         backgroundColor: Colors.black,
         child: Icon(
           Icons.clear_all,
-          color: Colors.amber,
+          color: Colors.amber.shade400,
         ),
       ),
       body: _buildLayout(screenSize),
